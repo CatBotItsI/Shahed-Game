@@ -38,8 +38,9 @@ jobs:
           yes | "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$SDK_DIR" --licenses
           yes | "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$SDK_DIR" "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
-      - name: Build APK with Buildozer
+      - name: Clean previous build and build APK
         run: |
+          buildozer android clean
           buildozer android debug
 
       - name: Upload APK artifact
@@ -47,4 +48,3 @@ jobs:
         with:
           name: shahed-game-apk
           path: bin/*.apk
-          
