@@ -1,38 +1,25 @@
-name: Build Android APK
+[app]
 
-on:
-  workflow_dispatch:
-  push:
-    branches: [ "main" ]
+title = Shahed Game
+package.name = shahedgame
+package.domain = org.catbotits.shahedgame
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+source.dir = .
+source.include_exts = py,png,jpg,kv,atlas,wav,ogg,mp3,json
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+version = 0.1
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+requirements = python3,pygame
 
-      - name: Install system dependencies for Buildozer
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf automake libtool libltdl-dev pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
+orientation = landscape
+fullscreen = 1
 
-      - name: Install Buildozer, python-for-android and Cython
-        run: |
-          python -m pip install --upgrade pip "setuptools<80" wheel "cython<3.1" buildozer python-for-android
+android.permissions = INTERNET
+android.api = 33
+android.minapi = 21
+android.archs = arm64-v8a,armeabi-v7a
 
-      - name: Build APK with Buildozer
-        run: |
-          buildozer android debug
+[buildozer]
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: shahed-game-apk
-          path: bin/*.apk
+log_level = 2
+warn_on_root = 1
