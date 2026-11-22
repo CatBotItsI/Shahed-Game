@@ -9,7 +9,7 @@ source.include_exts = py,png,jpg,kv,atlas,wav,ogg,mp3,json
 
 version = 0.1
 
-requirements = python3,pygame
+requirements = python3==3.13.7,pygame==2.6.1
 
 orientation = landscape
 fullscreen = 1
