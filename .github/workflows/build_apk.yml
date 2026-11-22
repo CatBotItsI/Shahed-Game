@@ -27,14 +27,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip "setuptools<80" wheel "cython<3.1" buildozer python-for-android
 
-      - name: Prepare Android SDK build-tools
+      - name: Install Android SDK cmdline-tools and build-tools
         run: |
-          mkdir -p /home/runner/.buildozer/android/platform/android-sdk
-          buildozer android debug --sdk || true
-          SDKMANAGER=$(find /home/runner/.buildozer/android/platform/android-sdk -name "sdkmanager" 2>/dev/null | head -n 1)
-          if [ -n "$SDKMANAGER" ]; then
-            yes | "$SDKMANAGER" --sdk_root=/home/runner/.buildozer/android/platform/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
-          fi
+          SDK_DIR="/home/runner/.buildozer/android/platform/android-sdk"
+          mkdir -p "$SDK_DIR/cmdline-tools" "$SDK_DIR/tools/bin"
+          curl -fsSL https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o /tmp/cmdtools.zip
+          unzip -q /tmp/cmdtools.zip -d "$SDK_DIR/cmdline-tools"
+          mv "$SDK_DIR/cmdline-tools/cmdline-tools" "$SDK_DIR/cmdline-tools/latest"
+          ln -sf "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" "$SDK_DIR/tools/bin/sdkmanager"
+          yes | "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$SDK_DIR" --licenses
+          yes | "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$SDK_DIR" "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
       - name: Build APK with Buildozer
         run: |
@@ -45,3 +47,4 @@ jobs:
         with:
           name: shahed-game-apk
           path: bin/*.apk
+          
